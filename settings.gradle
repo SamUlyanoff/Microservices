@@ -1,0 +1,9 @@
+rootProject.name = 'myApp'
+
+include 'api-gateway'
+include 'auth-service'
+include 'inventory-service'
+include 'notification-service'
+include 'order-service'
+include 'product-service'
+include 'user-service'
