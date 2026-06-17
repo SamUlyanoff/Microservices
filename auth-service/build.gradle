@@ -1,0 +1,27 @@
+plugins {
+	id 'org.springframework.boot'
+}
+
+dependencies {
+	//JDBC
+	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+	//Security
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	//Авторизация
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-authorization-server'
+	implementation 'org.springframework.security:spring-security-oauth2-jose'
+	//REST
+	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+	//KAFKA
+	implementation 'org.springframework.kafka:spring-kafka'
+
+	//PostgreSQL
+	runtimeOnly 'org.postgresql:postgresql'
+
+	//Tests
+	testImplementation 'org.springframework.boot:spring-boot-starter-data-jdbc-test'
+	testImplementation 'org.springframework.boot:spring-boot-starter-security-test'
+	testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+	testImplementation 'org.springframework.kafka:spring-kafka-test'
+	testImplementation 'org.testcontainers:kafka:1.19.3'
+}

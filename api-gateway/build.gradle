@@ -1,0 +1,15 @@
+plugins {
+	id 'org.springframework.boot'
+}
+
+
+dependencies {
+	//gRPS
+	implementation 'org.springframework.boot:spring-boot-starter-grpc-server'
+	//REST
+	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+
+	//Tests
+	testImplementation 'org.springframework.boot:spring-boot-starter-grpc-server-test'
+	testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+}

@@ -1,0 +1,20 @@
+plugins {
+	id 'org.springframework.boot'
+}
+
+dependencies {
+	//MongoDB
+	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+	implementation 'org.springframework.boot:spring-boot-starter-mongodb'
+	//REST
+	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+	//KAFKA
+	implementation 'org.springframework.kafka:spring-kafka'
+
+	//Tests (MongoDB, security, rest, kafka)
+	testImplementation 'org.springframework.boot:spring-boot-starter-data-mongodb-test'
+	testImplementation 'org.springframework.boot:spring-boot-starter-mongodb-test'
+	testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+	testImplementation 'org.springframework.kafka:spring-kafka-test'
+	testImplementation 'org.testcontainers:kafka:1.19.3'
+}
