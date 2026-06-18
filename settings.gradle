@@ -1,4 +1,4 @@
-rootProject.name = 'OrderApp'
+rootProject.name = 'Microservices'
 
 include 'api-gateway'
 include 'auth-service'
