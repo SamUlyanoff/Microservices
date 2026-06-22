@@ -1,21 +1,24 @@
 plugins {
 	id 'org.springframework.boot'
 }
-//TODO: убрать закомментированные зависимости для подключения к БД
+
 dependencies {
 	//gRPS
 	implementation 'org.springframework.boot:spring-boot-starter-grpc-server'
 	//JDBC
-//	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
-	//PostgreSQL
-	runtimeOnly 'org.postgresql:postgresql'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
 	//KAFKA
 	implementation 'org.springframework.boot:spring-boot-starter-kafka'
 	//Kafka-streams
 	implementation 'org.apache.kafka:kafka-streams'
+	// Liquibase
+	implementation 'org.liquibase:liquibase-core'
+
+	//PostgreSQL
+	runtimeOnly 'org.postgresql:postgresql'
 
 	//Tests(jdbc, grpc, kafka)
-//	testImplementation 'org.springframework.boot:spring-boot-starter-data-jdbc-test'
+	testImplementation 'org.springframework.boot:spring-boot-starter-data-jdbc-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-grpc-server-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-kafka-test'
 }
