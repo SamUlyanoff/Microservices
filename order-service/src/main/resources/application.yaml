@@ -1,6 +1,10 @@
 spring:
   application:
     name: order-service
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:5432/microservicesDB
+    username: postgres
+    password: password
 
 server:
   port: 8094

@@ -1,6 +1,14 @@
 spring:
   application:
     name: product-service
+  data:
+    mongodb:
+      host: ${MONGODB_HOST:localhost}
+      port: 27017
+      database: microservicesDB
+      username: admin
+      password: password
+      authentication-database: admin
 
 server:
   port: 8095
