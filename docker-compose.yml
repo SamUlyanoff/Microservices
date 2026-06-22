@@ -40,7 +40,6 @@ services:
       timeout: 3s
       retries: 5
 
-  #TODO: объявить в переменной environment подключения к БД (postgres, mongodb)
   api-gateway:
     build:
       context: ./api-gateway
@@ -63,6 +62,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    environment:
+      POSTGRES_HOST: postgres-db
 
   inventory-service:
     build:
@@ -76,6 +77,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    environment:
+      POSTGRES_HOST: postgres-db
 
   notification-service:
     build:
@@ -89,6 +92,8 @@ services:
     depends_on:
       mongodb:
         condition: service_healthy
+    environment:
+      MONGODB_HOST: mongo-db
 
   order-service:
     build:
@@ -102,6 +107,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    environment:
+      POSTGRES_HOST: postgres-db
 
   product-service:
     build:
@@ -115,6 +122,8 @@ services:
     depends_on:
       mongodb:
         condition: service_healthy
+    environment:
+      MONGODB_HOST: mongo-db
 
   user-service:
     build:
@@ -128,6 +137,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    environment:
+      POSTGRES_HOST: postgres-db
 
 networks:
   microservices-network:
