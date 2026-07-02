@@ -8,6 +8,6 @@ spring:
       database: microservicesDB
       username: admin
       password: password
-      authentication:database: admin
+      authentication-database: admin
 server:
   port: 8093
