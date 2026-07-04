@@ -2,6 +2,42 @@ version: '3.8'
 
 services:
   #TODO: разобраться с KAFKA
+  #  kafka:
+  #    image: confluentinc/cp-kafka:7.5.0
+  #    container_name: kafka
+  #    ports:
+  #      - "9092:9092"
+  #      - "9093:9093"
+  #    environment:
+  #      # KRaft
+  #      KAFKA_NODE_ID: 1
+  #      KAFKA_PROCESS_ROLES: 'broker,controller'
+  #      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka:9093'
+  #
+  #
+  #      KAFKA_LISTENERS: 'PLAINTEXT://kafka:29092,CONTROLLER://kafka:9093,PLAINTEXT_HOST://0.0.0.0:9092'
+  #      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092'
+  #      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT'
+  #      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+  #      KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
+  #
+  #      # Место для хранения логов
+  #      KAFKA_LOG_DIRS: '/var/lib/kafka/data'
+  #
+  #      # Cluster ID
+  #      CLUSTER_ID: '23E8A94D28A84F6AAF6CAF78CE023F68'
+  #
+  #    volumes:
+  #      - kafka-data:/var/lib/kafka/data #Том для хранения логов
+  #      - ./init-kafka.sh:/tmp/init-kafka.sh # Скрипт инициализации
+  #    networks:
+  #      - microservices-network
+  #    healthcheck:
+  #      test: [ "CMD", "kafka-topics", "--bootstrap-server", "localhost:9092", "--list" ]
+  #      interval: 15s
+  #      timeout: 10s
+  #      retries: 5
+  #      start_period: 60s
 
   postgres:
     image: postgres:16-alpine
