@@ -2,42 +2,65 @@ version: '3.8'
 
 services:
   #TODO: разобраться с KAFKA
-  #  kafka:
-  #    image: confluentinc/cp-kafka:7.5.0
-  #    container_name: kafka
-  #    ports:
-  #      - "9092:9092"
-  #      - "9093:9093"
-  #    environment:
-  #      # KRaft
-  #      KAFKA_NODE_ID: 1
-  #      KAFKA_PROCESS_ROLES: 'broker,controller'
-  #      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka:9093'
-  #
-  #
-  #      KAFKA_LISTENERS: 'PLAINTEXT://kafka:29092,CONTROLLER://kafka:9093,PLAINTEXT_HOST://0.0.0.0:9092'
-  #      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092'
-  #      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT'
-  #      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
-  #      KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
-  #
-  #      # Место для хранения логов
-  #      KAFKA_LOG_DIRS: '/var/lib/kafka/data'
-  #
-  #      # Cluster ID
-  #      CLUSTER_ID: '23E8A94D28A84F6AAF6CAF78CE023F68'
-  #
-  #    volumes:
-  #      - kafka-data:/var/lib/kafka/data #Том для хранения логов
-  #      - ./init-kafka.sh:/tmp/init-kafka.sh # Скрипт инициализации
-  #    networks:
-  #      - microservices-network
-  #    healthcheck:
-  #      test: [ "CMD", "kafka-topics", "--bootstrap-server", "localhost:9092", "--list" ]
-  #      interval: 15s
-  #      timeout: 10s
-  #      retries: 5
-  #      start_period: 60s
+  kafka-1:
+    image: confluentinc/cp-kafka:8.1.0
+    container_name: kafka-1
+    ports:
+      - "29092:29092"
+    environment:
+      CLUSTER_ID: 23E8A94D28A84F6AAF6CAF78CE023F68
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker, controller
+      #INTERNAL - общение сервисов и кафки внутри docker-сети
+      #EXTERNAL - для внешнего подключения
+      #CONTROLLER - для внутренного обзения брокеров кафки между собой
+      KAFKA_LISTENERS: INTERNAL://:9091, EXTERNAL://:29092, CONTROLLER://:9093
+      #Все ноды внутри одного брокера
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka-1:9093,2@kafka-2:9093
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka-1:9091,EXTERNAL://localhost:29092
+      #Шифрование отсутствует
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+
+  kafka-2:
+    image: confluentinc/cp-kafka:8.1.0
+    container_name: kafka-2
+    ports:
+      - "29093:29093"
+    environment:
+      CLUSTER_ID: 23E8A94D28A84F6AAF6CAF78CE023F68
+      KAFKA_NODE_ID: 2
+      KAFKA_PROCESS_ROLES: broker, controller
+      #INTERNAL - общение сервисов и кафки внутри docker-сети
+      #EXTERNAL - для внешнего подключения
+      #CONTROLLER - для внутренного обзения брокеров кафки между собой
+      KAFKA_LISTENERS: INTERNAL://:9091, EXTERNAL://:29093, CONTROLLER://:9093
+      #Все ноды внутри одного брокера
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka-1:9093,2@kafka-2:9093
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka-2:9091,EXTERNAL://localhost:29093
+      #Шифрование отсутствует
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:v0.7.2
+    container_name: kafka-ui
+    hostname: kafka-ui
+    depends_on:
+      - kafka-1
+      - kafka-2
+    ports:
+      - "8086:8080"
+    environment:
+      # Название кластера в веб-интерфейсе
+      KAFKA_CLUSTERS_0_NAME: local
+      # Указываем адреса наших брокеров в кластере
+      # так как Kafka-UI и брокеры в одной Docker-сети, то используем порты 9091
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka-1:9091,kafka-2:9091
+      # Настройка для динамической конфигурации брокеров через UI
+      DYNAMIC_CONFIG_ENABLED: true
 
   postgres:
     image: postgres:16-alpine
@@ -101,6 +124,7 @@ services:
         condition: service_healthy
     environment:
       POSTGRES_HOST: postgres-db
+      KAFKA_BOOTSTRAP_SERVERS: kafka-1:9091,kafka-2:9091
 
   inventory-service:
     build:
@@ -176,6 +200,8 @@ services:
         condition: service_healthy
     environment:
       POSTGRES_HOST: postgres-db
+      KAFKA_BOOTSTRAP_SERVERS: kafka-1:9091,kafka-2:9091
+
 
 networks:
   microservices-network:
