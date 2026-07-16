@@ -22,6 +22,8 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+    networks:
+      - microservices-network
 
   kafka-2:
     image: confluentinc/cp-kafka:8.1.0
@@ -43,24 +45,41 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+    networks:
+      - microservices-network
 
-  kafka-ui:
-    image: provectuslabs/kafka-ui:v0.7.2
-    container_name: kafka-ui
-    hostname: kafka-ui
+  schema-registry:
+    image: confluentinc/cp-schema-registry:7.6.0
+    container_name: schema-registry
     depends_on:
       - kafka-1
       - kafka-2
     ports:
+      - "8081:8081"
+    environment:
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: kafka-1:9091,kafka-2:9091
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+      SCHEMA_REGISTRY_KAFKASTORE_SECURITY_PROTOCOL: PLAINTEXT
+    networks:
+      - microservices-network
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:v0.7.2
+    container_name: kafka-ui
+    depends_on:
+      - kafka-1
+      - kafka-2
+      - schema-registry
+    ports:
       - "8086:8080"
     environment:
-      # Название кластера в веб-интерфейсе
       KAFKA_CLUSTERS_0_NAME: local
-      # Указываем адреса наших брокеров в кластере
-      # так как Kafka-UI и брокеры в одной Docker-сети, то используем порты 9091
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka-1:9091,kafka-2:9091
-      # Настройка для динамической конфигурации брокеров через UI
+      KAFKA_CLUSTERS_0_SCHEMAREGISTRY: http://schema-registry:8081
       DYNAMIC_CONFIG_ENABLED: true
+    networks:
+      - microservices-network
 
   postgres:
     image: postgres:16-alpine
@@ -125,6 +144,7 @@ services:
     environment:
       POSTGRES_HOST: postgres-db
       KAFKA_BOOTSTRAP_SERVERS: kafka-1:9091,kafka-2:9091
+      SCHEMA_REGISTRY_URL: http://schema-registry:8081
 
   inventory-service:
     build:
@@ -140,6 +160,8 @@ services:
         condition: service_healthy
     environment:
       POSTGRES_HOST: postgres-db
+      KAFKA_BOOTSTRAP_SERVERS: kafka-1:9091,kafka-2:9091
+      SCHEMA_REGISTRY_URL: http://schema-registry:8081
 
   notification-service:
     build:
@@ -155,6 +177,8 @@ services:
         condition: service_healthy
     environment:
       MONGODB_HOST: mongo-db
+      KAFKA_BOOTSTRAP_SERVERS: kafka-1:9091,kafka-2:9091
+      SCHEMA_REGISTRY_URL: http://schema-registry:8081
 
   order-service:
     build:
@@ -170,6 +194,8 @@ services:
         condition: service_healthy
     environment:
       POSTGRES_HOST: postgres-db
+      KAFKA_BOOTSTRAP_SERVERS: kafka-1:9091,kafka-2:9091
+      SCHEMA_REGISTRY_URL: http://schema-registry:8081
 
   product-service:
     build:
@@ -201,6 +227,7 @@ services:
     environment:
       POSTGRES_HOST: postgres-db
       KAFKA_BOOTSTRAP_SERVERS: kafka-1:9091,kafka-2:9091
+      SCHEMA_REGISTRY_URL: http://schema-registry:8081
 
 
 networks:

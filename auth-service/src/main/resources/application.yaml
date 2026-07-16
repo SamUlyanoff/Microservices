@@ -24,8 +24,10 @@ spring:
   kafka:
     bootstrap-servers: localhost:29092,localhost:29093
     producer:
-      key-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      key-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+      value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+    properties:
+      schema.registry.url: http://localhost:8081
 
 server:
   port: 8091

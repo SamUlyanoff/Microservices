@@ -13,7 +13,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-kafka'
 	// Liquibase
 	implementation 'org.liquibase:liquibase-core'
-
+	//AVRO
+	implementation 'io.confluent:kafka-avro-serializer:7.6.0'
+	implementation 'org.apache.avro:avro:1.11.3'
 	//PostgreSQL
 	runtimeOnly 'org.postgresql:postgresql'
 

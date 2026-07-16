@@ -9,5 +9,16 @@ spring:
       username: admin
       password: password
       authentication-database: admin
+
+  kafka:
+    bootstrap-servers: localhost:29092, localhost:29093
+    consumer:
+      group-id: notification-service
+      auto-offset-reset: earliest
+      key-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+      value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+    properties:
+      schema.registry.url: http://localhost:8081
+
 server:
   port: 8093

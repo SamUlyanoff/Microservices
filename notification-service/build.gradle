@@ -8,6 +8,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-mongodb'
 	//KAFKA
 	implementation 'org.springframework.kafka:spring-kafka'
+	//AVRO
+	implementation 'io.confluent:kafka-avro-serializer:7.6.0'
+	implementation 'org.apache.avro:avro:1.11.3'
 
 	//Tests (MongoDB, security, rest, kafka)
 	testImplementation 'org.springframework.boot:spring-boot-starter-data-mongodb-test'
