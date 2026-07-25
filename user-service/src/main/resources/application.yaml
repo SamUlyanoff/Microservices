@@ -24,7 +24,7 @@ spring:
   kafka:
     bootstrap-servers: localhost:29092,localhost:29093
     consumer:
-      group-id: user-service
+      group-id: userService
       auto-offset-reset: earliest
       key-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
       value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
