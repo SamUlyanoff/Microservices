@@ -13,16 +13,17 @@ repositories {
 dependencies {
 	//gRPS
 	implementation 'org.springframework.boot:spring-boot-starter-grpc-server'
-	//JDBC
-	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+	//JPA
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	//REST
 	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
 	// Liquibase
 	implementation 'org.liquibase:liquibase-core'
 	//KAFKA
 	implementation 'org.springframework.boot:spring-boot-starter-kafka'
+	implementation 'org.apache.avro:avro:1.11.3'
 	//AVRO
-	implementation 'io.confluent:kafka-avro-serializer:7.7.0'
+//	implementation 'io.confluent:kafka-avro-serializer:7.7.0'
 	implementation 'org.apache.avro:avro:1.11.3'
 	//PostgreSQL
 	runtimeOnly 'org.postgresql:postgresql'
