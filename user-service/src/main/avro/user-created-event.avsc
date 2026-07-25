@@ -1,7 +1,7 @@
 {
     "type": "record",
     "name": "UserCreatedEvent",
-    "namespace": "ru.microservices.auth_service.avro",
+    "namespace": "ru.microservices.user_service.avro",
     "fields": [
         {"name": "userId", "type": "string"},
         {"name": "firstName", "type": "string"},
