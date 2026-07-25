@@ -3,7 +3,7 @@ version: '3.8'
 services:
   #TODO: разобраться с KAFKA
   kafka-1:
-    image: confluentinc/cp-kafka:8.1.0
+    image: confluentinc/cp-kafka:7.7.0
     container_name: kafka-1
     ports:
       - "29092:29092"
@@ -26,7 +26,7 @@ services:
       - microservices-network
 
   kafka-2:
-    image: confluentinc/cp-kafka:8.1.0
+    image: confluentinc/cp-kafka:7.7.0
     container_name: kafka-2
     ports:
       - "29093:29093"
@@ -49,7 +49,7 @@ services:
       - microservices-network
 
   schema-registry:
-    image: confluentinc/cp-schema-registry:7.6.0
+    image: confluentinc/cp-schema-registry:7.7.0
     container_name: schema-registry
     depends_on:
       - kafka-1

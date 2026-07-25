@@ -7,3 +7,4 @@ include 'notification-service'
 include 'order-service'
 include 'product-service'
 include 'user-service'
+
