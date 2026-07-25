@@ -9,7 +9,7 @@ dependencies {
 	//KAFKA
 	implementation 'org.springframework.kafka:spring-kafka'
 	//AVRO
-	implementation 'io.confluent:kafka-avro-serializer:7.6.0'
+	implementation 'org.apache.kafka:kafka-clients:3.6.0'
 	implementation 'org.apache.avro:avro:1.11.3'
 
 	//Tests (MongoDB, security, rest, kafka)
