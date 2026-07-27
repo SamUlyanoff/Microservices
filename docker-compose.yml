@@ -48,22 +48,6 @@ services:
     networks:
       - microservices-network
 
-  schema-registry:
-    image: confluentinc/cp-schema-registry:7.7.0
-    container_name: schema-registry
-    depends_on:
-      - kafka-1
-      - kafka-2
-    ports:
-      - "8081:8081"
-    environment:
-      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: kafka-1:9091,kafka-2:9091
-      SCHEMA_REGISTRY_HOST_NAME: schema-registry
-      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
-      SCHEMA_REGISTRY_KAFKASTORE_SECURITY_PROTOCOL: PLAINTEXT
-    networks:
-      - microservices-network
-
   kafka-ui:
     image: provectuslabs/kafka-ui:v0.7.2
     container_name: kafka-ui
@@ -76,7 +60,6 @@ services:
     environment:
       KAFKA_CLUSTERS_0_NAME: local
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka-1:9091,kafka-2:9091
-      KAFKA_CLUSTERS_0_SCHEMAREGISTRY: http://schema-registry:8081
       DYNAMIC_CONFIG_ENABLED: true
     networks:
       - microservices-network
@@ -144,7 +127,6 @@ services:
     environment:
       POSTGRES_HOST: postgres-db
       KAFKA_BOOTSTRAP_SERVERS: kafka-1:9091,kafka-2:9091
-      SCHEMA_REGISTRY_URL: http://schema-registry:8081
 
   inventory-service:
     build:
@@ -161,7 +143,6 @@ services:
     environment:
       POSTGRES_HOST: postgres-db
       KAFKA_BOOTSTRAP_SERVERS: kafka-1:9091,kafka-2:9091
-      SCHEMA_REGISTRY_URL: http://schema-registry:8081
 
   notification-service:
     build:
@@ -178,7 +159,6 @@ services:
     environment:
       MONGODB_HOST: mongo-db
       KAFKA_BOOTSTRAP_SERVERS: kafka-1:9091,kafka-2:9091
-      SCHEMA_REGISTRY_URL: http://schema-registry:8081
 
   order-service:
     build:
@@ -195,7 +175,6 @@ services:
     environment:
       POSTGRES_HOST: postgres-db
       KAFKA_BOOTSTRAP_SERVERS: kafka-1:9091,kafka-2:9091
-      SCHEMA_REGISTRY_URL: http://schema-registry:8081
 
   product-service:
     build:
@@ -227,7 +206,6 @@ services:
     environment:
       POSTGRES_HOST: postgres-db
       KAFKA_BOOTSTRAP_SERVERS: kafka-1:9091,kafka-2:9091
-      SCHEMA_REGISTRY_URL: http://schema-registry:8081
 
 
 networks:

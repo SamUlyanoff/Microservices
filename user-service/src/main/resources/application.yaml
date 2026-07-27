@@ -26,10 +26,12 @@ spring:
     consumer:
       group-id: userService
       auto-offset-reset: earliest
-      key-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
-      value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
     properties:
-      schema.registry.url: http://localhost:8081
+      spring.json.trusted.packages: "ru.microservices.user_service.entity.*"
+
+
 
 server:
   port: 8096

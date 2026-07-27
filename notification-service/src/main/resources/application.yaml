@@ -13,12 +13,13 @@ spring:
   kafka:
     bootstrap-servers: localhost:29092, localhost:29093
     consumer:
-      group-id: notification-service
+      group-id: notificationService
       auto-offset-reset: earliest
-      key-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
-      value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
     properties:
-      schema.registry.url: http://localhost:8081
+#      TODO: поменять на фактический пакет
+      spring.json.trusted.packages: "*"
 
 server:
   port: 8093

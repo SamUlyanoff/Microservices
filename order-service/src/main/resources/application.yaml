@@ -24,15 +24,16 @@ spring:
   kafka:
     bootstrap-servers: localhost:29092,localhost:29093
     producer:
-      key-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
-      value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+      key-serializer: org.apache.kafka.comon.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
     consumer:
-      group-id: order-service
+      group-id: orderService
       auto-offset-reset: earliest
-      key-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
-      value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
     properties:
-      schema.registry.url: http://localhost:8081
+#      TODO: поменять на фактический пакет
+      spring.json.trusted.packages: "*"
 
 server:
   port: 8094
