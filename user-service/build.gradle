@@ -1,13 +1,5 @@
 plugins {
 	id 'org.springframework.boot'
-	id 'com.github.davidmc24.gradle.plugin.avro' version '1.9.1'
-}
-
-repositories {
-	mavenCentral()
-	maven {
-		url = 'https://packages.confluent.io/maven/'
-	}
 }
 
 dependencies {
@@ -22,7 +14,7 @@ dependencies {
 	implementation 'org.apache.kafka:kafka-clients:3.6.0'
 	//AVRO
 //	implementation 'io.confluent:kafka-avro-serializer:7.7.0'
-	implementation 'org.apache.avro:avro:1.11.3'
+//	implementation 'org.apache.avro:avro:1.11.3'
 	// Liquibase
 	implementation 'org.liquibase:liquibase-core'
 

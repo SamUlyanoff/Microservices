@@ -10,6 +10,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
 	//KAFKA
 	implementation 'org.springframework.kafka:spring-kafka'
+	implementation 'org.apache.kafka:kafka-clients:3.6.0'
 
 	//Tests (MongoDB, security, rest, kafka)
 	testImplementation 'org.springframework.boot:spring-boot-starter-data-mongodb-test'
