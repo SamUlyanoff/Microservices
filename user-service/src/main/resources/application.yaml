@@ -21,6 +21,7 @@ spring:
   liquibase:
     enabled: true
     change-log: classpath:db/changelog/db.changelog-master.xml
+    default-schema: public
 
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:29092,localhost:29093}
@@ -32,7 +33,11 @@ spring:
     properties:
       spring.json.trusted.packages: "ru.microservices.common_events.*"
 
-
+logging:
+  level:
+    liquibase: DEBUG
+    org.springframework.boot.autoconfigure.liquibase: DEBUG
+    org.springframework.jdbc: DEBUG
 
 server:
   port: 8096

@@ -13,7 +13,7 @@
             </not>
         </preConditions>
 
-        <createTable tableName="users">
+        <createTable tableName="user">
             <column name="id" type="UUID">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -34,7 +34,7 @@
             </column>
         </createTable>
 
-        <createIndex tableName="users" indexName="idx_users_email">
+        <createIndex tableName="user" indexName="idx_user_email">
             <column name="email"/>
         </createIndex>
 
