@@ -2,10 +2,12 @@ package ru.microservices.user_service.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -17,6 +19,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class User {
 
+    @Id
     @Column(name = "id")
     private UUID id;
     @Column(name = "first_name")
@@ -25,6 +28,7 @@ public class User {
     private String lastName;
     @Column(name = "email")
     private String email;
+    @CreationTimestamp
     @Column(name = "created_at")
     private Instant createdAt;
 

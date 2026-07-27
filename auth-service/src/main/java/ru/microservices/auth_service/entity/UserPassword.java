@@ -1,4 +1,4 @@
-package ru.microservices.user_service.entity;
+package ru.microservices.auth_service.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

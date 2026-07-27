@@ -1,7 +1,7 @@
-package ru.microservices.user_service.repository;
+package ru.microservices.auth_service.repozitory;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import ru.microservices.user_service.entity.UserPassword;
+import ru.microservices.auth_service.entity.UserPassword;
 
 import java.util.UUID;
 
