@@ -70,9 +70,9 @@ services:
     environment:
       POSTGRES_DB: microservicesDB
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
+      POSTGRES_PASSWORD: 12345678
     ports:
-      - "5432:5432"
+      - "5454:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data #том для сохранения данных контейнером
     networks:

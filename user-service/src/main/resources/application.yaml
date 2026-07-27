@@ -3,9 +3,10 @@ spring:
     name: user-service
 
   datasource:
-    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:5432/microservicesDB
-    username: postgres
-    password: password
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5454}/microservicesDB
+    username: ${DB_USER:postgres}
+    password: ${DB_PASS:12345678}
+    driver-class-name: org.postgresql.Driver
 
   jpa:
     hibernate:
@@ -22,7 +23,7 @@ spring:
     change-log: classpath:db/changelog/db.changelog-master.xml
 
   kafka:
-    bootstrap-servers: localhost:29092,localhost:29093
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:29092,localhost:29093}
     consumer:
       group-id: userService
       auto-offset-reset: earliest
