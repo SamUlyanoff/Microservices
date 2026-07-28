@@ -33,11 +33,17 @@ spring:
     properties:
       spring.json.trusted.packages: "ru.microservices.common_events.*"
 
+grpc:
+  server:
+    port: 9090
+    address: 0.0.0.0
+
 logging:
   level:
     liquibase: DEBUG
     org.springframework.boot.autoconfigure.liquibase: DEBUG
     org.springframework.jdbc: DEBUG
+    ru.microservices.user_service.grpc: DEBUG
 
 server:
   port: 8096

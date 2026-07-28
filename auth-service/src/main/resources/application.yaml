@@ -29,5 +29,19 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
+grpc:
+  client:
+    user-service:
+      address: static://localhost:9090
+      negotiation-type: plaintext
+
+logging:
+  level:
+    liquibase: DEBUG
+    org.springframework.boot.autoconfigure.liquibase: DEBUG
+    org.springframework.jdbc: DEBUG
+    ru.microservices.user_service.grpc: DEBUG
+
+
 server:
   port: 8091
