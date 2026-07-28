@@ -1,9 +1,15 @@
 //root build-gradle
 plugins {
+    id 'java-library'
     id 'org.springframework.boot' version '4.1.0' apply false //применяется в модулях
     id 'io.spring.dependency-management' version '1.1.7' apply false //применяется в модулях
 }
 
+ext {
+    grpcVersion = '1.68.1'
+    protobufVersion = '3.25.5'
+    protobufPluginVersion = '0.9.4'
+}
 
 subprojects{
 
