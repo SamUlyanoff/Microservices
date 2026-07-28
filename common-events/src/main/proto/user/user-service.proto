@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package user;
+
+option java_package = "ru.microservices.common_events.proto.user";
+
+service UserService{
+
+  //Находится ли в БД передаваемый email
+  rpc CheckEmailExistence(CheckEmailExistenceRequest) returns (CheckEmailExistenceResponse);
+}
+
+message CheckEmailExistenceRequest{
+  string email = 1;
+}
+
+message CheckEmailExistenceResponse{
+  bool existence = 1;
+}
