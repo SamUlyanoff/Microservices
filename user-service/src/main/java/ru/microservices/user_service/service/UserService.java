@@ -20,4 +20,13 @@ public class UserService {
     public void createUser(UserCreatedEvent userCreatedEvent){
         userRepository.save(userMapper.mapUser(userCreatedEvent));
     }
+
+    /**
+     * Если в БД находится email, то возвращает true
+     * Если в БД нет такого email, то возвращает false
+     */
+    @Transactional
+    public boolean checkEmailExistence(String email){
+        return userRepository.getUserByEmail(email)!=null;
+    }
 }
