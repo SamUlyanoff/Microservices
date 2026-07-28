@@ -5,8 +5,6 @@ import org.apache.kafka.common.config.TopicConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.TopicBuilder;
-import org.springframework.kafka.core.KafkaTemplate;
-import ru.microservices.common_events.UserCreatedEvent;
 
 @Configuration
 public class KafkaConfig {
