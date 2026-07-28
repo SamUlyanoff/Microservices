@@ -3,13 +3,6 @@ plugins {
 	id "org.liquibase.gradle" version "2.2.0"
 }
 
-repositories {
-	mavenCentral()
-	maven {
-		url 'https://packages.confluent.io/maven/'
-	}
-}
-
 dependencies {
 	implementation project(':common-events')
 
@@ -34,6 +27,13 @@ dependencies {
 
 	//PostgreSQL
 	runtimeOnly 'org.postgresql:postgresql'
+
+	//gRPC
+	implementation 'net.devh:grpc-server-spring-boot-starter:3.1.0.RELEASE'
+	// gRPC Client
+	implementation "io.grpc:grpc-netty-shaded:${grpcVersion}"
+	// Protobuf
+	implementation "com.google.protobuf:protobuf-java:${protobufVersion}"
 
 	//Tests
 	testImplementation 'org.springframework.boot:spring-boot-starter-data-jdbc-test'
