@@ -1,4 +1,4 @@
-package ru.microservices.auth_service.repozitory;
+package ru.microservices.auth_service.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import ru.microservices.auth_service.entity.UserPassword;

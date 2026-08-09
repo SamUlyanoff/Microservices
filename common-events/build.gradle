@@ -13,6 +13,9 @@ jar {
 }
 
 dependencies {
+	//jakarta
+	implementation 'jakarta.persistence:jakarta.persistence-api:3.1.0'
+
 	//KAFKA
 	implementation 'org.springframework.kafka:spring-kafka'
 	implementation 'org.apache.kafka:kafka-clients:3.6.0'
@@ -23,7 +26,7 @@ dependencies {
 	// gRPC Stub (для генерации заглушек)
 	implementation "io.grpc:grpc-stub:${grpcVersion}"
 	implementation "io.grpc:grpc-protobuf:${grpcVersion}"
-
+	implementation 'javax.annotation:javax.annotation-api:1.3.2'
 
 	//Tests (kafka)
 	testImplementation 'org.springframework.kafka:spring-kafka-test'
@@ -40,8 +43,17 @@ protobuf {
 		}
 	}
 	generateProtoTasks {
-		all()*.plugins {
-			grpc {}
+		all().each { task ->
+			task.builtins {
+				java {
+					option 'annotate_code'  // Добавьте это для Java
+				}
+			}
+			task.plugins {
+				grpc {
+					option '@generated=omit'
+				}
+			}
 		}
 	}
 }

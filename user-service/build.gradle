@@ -9,7 +9,7 @@ dependencies {
 	//JPA
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	//Security
-	implementation 'org.springframework.boot:spring-boot-starter-security'
+//	implementation 'org.springframework.boot:spring-boot-starter-security'
 	//REST
 	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
 	//KAFKA
@@ -27,6 +27,8 @@ dependencies {
 
 	//gRPC
 		implementation 'net.devh:grpc-server-spring-boot-starter:3.1.0.RELEASE'
+		implementation "io.grpc:grpc-stub:${grpcVersion}"
+		implementation "io.grpc:grpc-protobuf:${grpcVersion}"
 		// gRPC Server
 		implementation "io.grpc:grpc-netty-shaded:${grpcVersion}"
 		// Protobuf

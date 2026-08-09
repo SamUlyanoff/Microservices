@@ -5,5 +5,6 @@
 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
     <include file="07/db.changelog-init-user_password.xml" relativeToChangelogFile="true" />
+    <include file="07/db.changelog-init-outbox_auth.xml" relativeToChangelogFile="true" />
 
 </databaseChangeLog>

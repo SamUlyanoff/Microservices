@@ -13,10 +13,10 @@ public interface UserRepository extends JpaRepository<User, UUID> {
      * По получаемому email возвращает соответствующего пользователя
      */
     @Query("""
-        SELECT 
-            u
-        FROM User u
-        WHERE u.email =:email
+            SELECT
+                u
+            FROM User u
+            WHERE u.email =:email
             """)
     User getUserByEmail(@Param("email") String email);
 }

@@ -23,7 +23,7 @@ public class UserPassword {
     @Id
     @Column(name = "user_id")
     private UUID userId;
-    @Column(name = "user_password")
+    @Column(name = "password")
     private String hashedPassword;
     @CreationTimestamp
     @Column(name = "created_at")

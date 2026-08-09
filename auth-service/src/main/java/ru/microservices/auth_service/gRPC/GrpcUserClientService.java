@@ -1,19 +1,19 @@
 package ru.microservices.auth_service.gRPC;
 
-import lombok.AllArgsConstructor;
+import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Component;
 import ru.microservices.common_events.proto.user.*;
 
 @Component
-@AllArgsConstructor
 public class GrpcUserClientService implements UserServiceClient {
 
-    private final UserServiceGrpc.UserServiceBlockingStub stub;
+    @GrpcClient("user-service")
+    private UserInternalServiceGrpc.UserInternalServiceBlockingStub stub;
 
     @Override
     public Boolean checkEmailExistence(String email) {
         try {
-            var request = UserServiceOuterClass.CheckEmailExistenceRequest.newBuilder()
+            var request = UserService.CheckEmailExistenceRequest.newBuilder()
                     .setEmail(email)
                     .build();
 
@@ -22,7 +22,7 @@ public class GrpcUserClientService implements UserServiceClient {
             return response.getExistence();
 
         } catch (RuntimeException e) {
-            throw new RuntimeException("Ошибка в обращении к user-service");
+            throw new RuntimeException("Ошибка в обращении к user-service" + e.getMessage(), e);
         }
     }
 }

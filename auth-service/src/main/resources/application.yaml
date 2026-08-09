@@ -28,12 +28,18 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-
+    properties:
+      connections.max.idle.ms: 5000
+      reconnect.backoff.max.ms: 1000
+      reconnect.backoff.ms: 50
+      request.timeout.ms: 5000
 grpc:
   client:
     user-service:
       address: static://localhost:9090
-      negotiation-type: plaintext
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
+      negotiationType: plaintext
 
 logging:
   level:

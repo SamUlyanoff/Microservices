@@ -1,17 +1,24 @@
 package ru.microservices.auth_service.service;
 
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.microservices.auth_service.converter.ArrayToStringConverter;
+import ru.microservices.auth_service.entity.AuthOutBoxEvent;
+import ru.microservices.auth_service.gRPC.GrpcUserClientService;
 import ru.microservices.auth_service.models.UserRequest;
+import ru.microservices.auth_service.repository.AuthOutBoxRepository;
 import ru.microservices.common_events.UserCreatedEvent;
 import ru.microservices.auth_service.entity.UserPassword;
-import ru.microservices.auth_service.repozitory.UserPasswordRepository;
+import ru.microservices.auth_service.repository.UserPasswordRepository;
+import tools.jackson.databind.ObjectMapper;
 
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.UUID;
 
 @Service
@@ -22,25 +29,51 @@ public class AuthService {
     private final KafkaTemplate<String, UserCreatedEvent> kafkaTemplate;
     private final ArrayToStringConverter arrayToStringConverter;
     private final UserPasswordRepository userPasswordRepository;
+    private final GrpcUserClientService grpcUserClientService;
+    private final AuthOutBoxRepository authOutBoxRepository;
+    private final ObjectMapper objectMapper;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Transactional
     public String createUser(UserRequest userRequest){
+
+        logger.info("Поступаемый запрос: {}", userRequest);
+
+        String email = userRequest.email();
+
+        if(grpcUserClientService.checkEmailExistence(email)==true){
+            throw new IllegalArgumentException("Пользователь с таким email уже зарегистрирован");
+        }
+
+        logger.info("Пользователь с email`ом {} не найден, регистрация разрешена", userRequest.email());
+
         String userId = UUID.randomUUID().toString();
+
+        userPasswordRepository.save(UserPassword.builder()
+                .userId(UUID.fromString(userId))
+                .hashedPassword(passwordEncoder.encode(arrayToStringConverter.arrayToString(userRequest.password())))
+                .build());
+        Arrays.fill(userRequest.password(), '\0');
+
+        //создание события кафка
         UserCreatedEvent userCreatedEvent = UserCreatedEvent.builder()
                 .id(userId)
                 .firstName(userRequest.firstName())
                 .lastName(userRequest.lastName())
-                .email(userRequest.email())
+                .email(email)
                 .createdAt(Instant.now())
                 .build();
 
-         kafkaTemplate.send("user.created", userCreatedEvent);
-
-         //TODO: как правильно сделать?
-         userPasswordRepository.save(UserPassword.builder()
-                 .userId(UUID.fromString(userId))
-                 .hashedPassword(passwordEncoder.encode(arrayToStringConverter.arrayToString(userRequest.password())))
-                 .build());
+        //Создание записи в таблице outbox_auth
+        authOutBoxRepository.save(
+                AuthOutBoxEvent.builder()
+                .aggregateId(userId)
+                .eventType("user.created")
+                .payload(objectMapper.writeValueAsString(userCreatedEvent))
+                .createdAt(Instant.now())
+                .sent(false)
+                .build()
+        );
 
         return userId;
     }
