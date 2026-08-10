@@ -28,6 +28,14 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    properties:
+      request.timeout.ms: 2000
+      default.api.timeout.ms: 3000
+      max.block.ms: 2000
+      reconnect.backoff.ms: 500
+      reconnect.backoff.max.ms: 2000
+
+
 
 grpc:
   client:
