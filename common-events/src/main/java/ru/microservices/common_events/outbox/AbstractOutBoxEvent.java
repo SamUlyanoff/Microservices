@@ -21,12 +21,17 @@ public abstract class AbstractOutBoxEvent {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    /**ИДЕНТИФИКАТОР ДЛЯ АГРЕГАЦИИ<br></br>
+     * События с одним aggregateId будут попадать в одну партицию и обрабатываться поочередно
+     */
     @Column(name = "aggregate_id", nullable = false)
     private String aggregateId;
 
+    /**Наименование топика*/
     @Column(name = "event_type", nullable = false)
     private String eventType;
 
+    /**Событие KAFKA*/
     @Column(name = "payload", nullable = false)
     private String payload;
 
