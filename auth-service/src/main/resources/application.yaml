@@ -28,6 +28,7 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      acks: all
     properties:
       request.timeout.ms: 2000
       default.api.timeout.ms: 3000

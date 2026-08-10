@@ -21,7 +21,7 @@ public class AuthOutBoxScheduler {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Scheduled(fixedDelay = 3000)
-    @Transactional
+    @Transactional(timeout = 5)
     public void processOutbox() {
 
         List<AuthOutBoxEvent> events = authOutBoxRepository.getEventsWithoutSent();
@@ -43,7 +43,7 @@ public class AuthOutBoxScheduler {
                 authOutBoxRepository.updateSentStatusById(event.getId(), true);
 
             } catch (Exception e) {
-                logger.error("Ошибка при отправке события: eventId = {}, eventType = {}", event.getId(), event.getEventType());
+                logger.error("Ошибка при отправке события: eventId = {}, eventType = {}, error = {}", event.getId(), event.getEventType(), e.getMessage(), e);
             }
         }
     }
