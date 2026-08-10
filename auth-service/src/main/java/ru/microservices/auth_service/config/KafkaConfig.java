@@ -13,7 +13,7 @@ public class KafkaConfig {
     public NewTopic userCreatedTopic(){
         return TopicBuilder.name("user.created")
                 .partitions(3)
-                .replicas(3)
+                .replicas(2)
                 .config(TopicConfig.RETENTION_MS_CONFIG, "86400000")
                 .config(TopicConfig.RETENTION_BYTES_CONFIG, "524288000")
                 .build();
