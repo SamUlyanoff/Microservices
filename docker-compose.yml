@@ -54,7 +54,6 @@ services:
     depends_on:
       - kafka-1
       - kafka-2
-      - schema-registry
     ports:
       - "8086:8080"
     environment:
@@ -124,9 +123,12 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      user-service:
+        condition: service_started
     environment:
       POSTGRES_HOST: postgres-db
       KAFKA_BOOTSTRAP_SERVERS: kafka-1:9091,kafka-2:9091
+      GRPC_USER_SERVICE_ADDRESS: static://user-service:9090
 
   inventory-service:
     build:

@@ -27,16 +27,12 @@ spring:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:29092,localhost:29093}
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-    properties:
-      connections.max.idle.ms: 5000
-      reconnect.backoff.max.ms: 1000
-      reconnect.backoff.ms: 50
-      request.timeout.ms: 5000
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
 grpc:
   client:
     user-service:
-      address: static://localhost:9090
+      address: ${GRPC_USER_SERVICE_ADDRESS:static://localhost:9090}
       enableKeepAlive: true
       keepAliveWithoutCalls: true
       negotiationType: plaintext
