@@ -3,7 +3,6 @@ package ru.microservices.auth_service.service;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +25,6 @@ import java.util.UUID;
 public class AuthService {
 
     private final PasswordEncoder passwordEncoder;
-    private final KafkaTemplate<String, UserCreatedEvent> kafkaTemplate;
     private final ArrayToStringConverter arrayToStringConverter;
     private final UserPasswordRepository userPasswordRepository;
     private final GrpcUserClientService grpcUserClientService;

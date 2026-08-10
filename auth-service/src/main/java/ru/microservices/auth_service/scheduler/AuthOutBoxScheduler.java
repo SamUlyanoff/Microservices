@@ -30,7 +30,7 @@ public class AuthOutBoxScheduler {
             return;
         }
 
-        logger.info("Количество неотправленных событий: {}", events.size());
+        logger.info("Количество не отправленных событий: {}", events.size());
 
         for (AuthOutBoxEvent event : events) {
             try {

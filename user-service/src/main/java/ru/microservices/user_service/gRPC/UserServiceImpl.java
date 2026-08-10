@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import net.devh.boot.grpc.server.service.GrpcService;
 import ru.microservices.common_events.proto.user.UserInternalServiceGrpc;
 import ru.microservices.user_service.service.UserService;
+import ru.microservices.common_events.proto.user.UserService.CheckEmailExistenceRequest;
+import ru.microservices.common_events.proto.user.UserService.CheckEmailExistenceResponse;
 
 @GrpcService
 @AllArgsConstructor
@@ -14,14 +16,14 @@ public class UserServiceImpl extends UserInternalServiceGrpc.UserInternalService
     private final UserService userService;
 
     public void checkEmailExistence(
-            ru.microservices.common_events.proto.user.UserService.CheckEmailExistenceRequest request,
-            StreamObserver<ru.microservices.common_events.proto.user.UserService.CheckEmailExistenceResponse> responseStreamObserver){
+            CheckEmailExistenceRequest request,
+            StreamObserver<CheckEmailExistenceResponse> responseStreamObserver){
 
         try {
             boolean existence = userService.checkEmailExistence(request.getEmail());
 
 
-            var response = ru.microservices.common_events.proto.user.UserService.CheckEmailExistenceResponse.newBuilder()
+            var response = CheckEmailExistenceResponse.newBuilder()
                     .setExistence(existence)
                     .build();
 
