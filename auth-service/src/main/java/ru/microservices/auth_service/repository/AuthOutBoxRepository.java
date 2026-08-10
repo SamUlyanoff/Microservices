@@ -11,12 +11,15 @@ import java.util.UUID;
 
 public interface AuthOutBoxRepository extends JpaRepository<AuthOutBoxEvent, UUID> {
 
-    @Query("""
+    @Query(value = """
             SELECT
                 aoe
-            FROM AuthOutBoxEvent aoe
+            FROM outbox_auth aoe
             WHERE aoe.sent = false
-            """)
+            ORDER BY aoe.created_at ASC
+            LIMIT 10
+            FOR UPDATE SKIP LOCKED
+            """, nativeQuery = true)
     List<AuthOutBoxEvent> getEventsWithoutSent();
 
     @Modifying
