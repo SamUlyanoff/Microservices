@@ -28,7 +28,7 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
-      acks: all
+      acks: all #Продюсер ждет подтверждения принятия сообщений всех реплик, кто был в коннекте
     properties:
       request.timeout.ms: 2000
       default.api.timeout.ms: 3000
