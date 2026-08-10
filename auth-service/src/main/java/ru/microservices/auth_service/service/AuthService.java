@@ -35,8 +35,6 @@ public class AuthService {
     @Transactional
     public String createUser(UserRequest userRequest){
 
-        logger.info("Поступаемый запрос: {}", userRequest);
-
         String email = userRequest.email();
 
         if(grpcUserClientService.checkEmailExistence(email)==true){
