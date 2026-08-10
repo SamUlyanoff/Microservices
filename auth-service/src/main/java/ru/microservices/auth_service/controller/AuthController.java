@@ -1,5 +1,6 @@
 package ru.microservices.auth_service.controller;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +16,7 @@ public class AuthController {
 
     @PostMapping("/createUser")
     @ResponseStatus(HttpStatus.CREATED)
-    public String createUser(@RequestBody UserRequest userRequest){
+    public String createUser(@RequestBody @Valid UserRequest userRequest){
         return authService.createUser(userRequest);
     }
 }

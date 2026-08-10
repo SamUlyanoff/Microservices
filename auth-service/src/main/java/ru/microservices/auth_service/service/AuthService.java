@@ -1,5 +1,6 @@
 package ru.microservices.auth_service.service;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +12,7 @@ import ru.microservices.auth_service.entity.AuthOutBoxEvent;
 import ru.microservices.auth_service.gRPC.GrpcUserClientService;
 import ru.microservices.auth_service.models.UserRequest;
 import ru.microservices.auth_service.repository.AuthOutBoxRepository;
+import ru.microservices.auth_service.validation.PasswordValidation;
 import ru.microservices.common_events.UserCreatedEvent;
 import ru.microservices.auth_service.entity.UserPassword;
 import ru.microservices.auth_service.repository.UserPasswordRepository;
@@ -30,10 +32,13 @@ public class AuthService {
     private final GrpcUserClientService grpcUserClientService;
     private final AuthOutBoxRepository authOutBoxRepository;
     private final ObjectMapper objectMapper;
+    private final PasswordValidation passwordValidation;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Transactional
     public String createUser(UserRequest userRequest){
+
+        passwordValidation.validate(userRequest.password());
 
         String email = userRequest.email();
 
