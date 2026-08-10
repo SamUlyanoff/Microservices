@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import ru.microservices.auth_service.entity.AuthOutBoxEvent;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -13,7 +14,7 @@ public interface AuthOutBoxRepository extends JpaRepository<AuthOutBoxEvent, UUI
 
     @Query(value = """
             SELECT
-                aoe
+                *
             FROM outbox_auth aoe
             WHERE aoe.sent = false
             ORDER BY aoe.created_at ASC
@@ -21,6 +22,16 @@ public interface AuthOutBoxRepository extends JpaRepository<AuthOutBoxEvent, UUI
             FOR UPDATE SKIP LOCKED
             """, nativeQuery = true)
     List<AuthOutBoxEvent> getEventsWithoutSent();
+
+    @Query(value = """
+            SELECT
+                *
+            FROM outbox_auth aoe
+            WHERE aoe.sent = false AND EXTRACT(EPOCH FROM (NOW() - aoe.created_at)) >300
+            ORDER BY aoe.created_at ASC
+            FOR UPDATE SKIP LOCKED
+            """, nativeQuery = true)
+    List<AuthOutBoxEvent> getStuckEvents();
 
     @Modifying
     @Query("""
@@ -30,4 +41,11 @@ public interface AuthOutBoxRepository extends JpaRepository<AuthOutBoxEvent, UUI
             WHERE aoe.id =:id
             """)
     void updateSentStatusById(@Param("id") UUID id, @Param("sent") boolean sent);
+
+    @Query("""
+            DELETE
+            FROM AuthOutBoxEvent aoe
+            WHERE aoe.aggregateId =:aggregateId
+            """)
+    void deleteByAggregateId(@Param("aggregateId") UUID aggregateId);
 }
