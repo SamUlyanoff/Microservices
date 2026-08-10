@@ -1,15 +1,11 @@
 package ru.microservices.auth_service.service;
 
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.microservices.auth_service.converter.ArrayToStringConverter;
 import ru.microservices.auth_service.entity.AuthOutBoxEvent;
-import ru.microservices.auth_service.gRPC.GrpcUserClientService;
 import ru.microservices.auth_service.models.UserRequest;
 import ru.microservices.auth_service.repository.AuthOutBoxRepository;
 import ru.microservices.auth_service.validation.PasswordValidation;
@@ -29,11 +25,9 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final ArrayToStringConverter arrayToStringConverter;
     private final UserPasswordRepository userPasswordRepository;
-    private final GrpcUserClientService grpcUserClientService;
     private final AuthOutBoxRepository authOutBoxRepository;
     private final ObjectMapper objectMapper;
     private final PasswordValidation passwordValidation;
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Transactional
     public String createUser(UserRequest userRequest){
@@ -41,12 +35,6 @@ public class AuthService {
         passwordValidation.validate(userRequest.password());
 
         String email = userRequest.email();
-
-        if(grpcUserClientService.checkEmailExistence(email)==true){
-            throw new IllegalArgumentException("Пользователь с таким email уже зарегистрирован");
-        }
-
-        logger.info("Пользователь с email`ом {} не найден, регистрация разрешена", userRequest.email());
 
         String userId = UUID.randomUUID().toString();
 
