@@ -32,17 +32,19 @@ public class AuthService {
     @Transactional
     public String createUser(UserRequest userRequest){
 
-        passwordValidation.validate(userRequest.password());
-
         String email = userRequest.email();
 
         String userId = UUID.randomUUID().toString();
 
-        userPasswordRepository.save(UserPassword.builder()
-                .userId(UUID.fromString(userId))
-                .hashedPassword(passwordEncoder.encode(arrayToStringConverter.arrayToString(userRequest.password())))
-                .build());
-        Arrays.fill(userRequest.password(), '\0');
+        try {
+            passwordValidation.validate(userRequest.password());
+            userPasswordRepository.save(UserPassword.builder()
+                    .userId(UUID.fromString(userId))
+                    .hashedPassword(passwordEncoder.encode(arrayToStringConverter.arrayToString(userRequest.password())))
+                    .build());
+        }finally {
+            Arrays.fill(userRequest.password(), '\0');
+        }
 
         //создание события кафка
         UserCreatedEvent userCreatedEvent = UserCreatedEvent.builder()

@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ArrayToStringConverter {
 
-    public String arrayToString(Character [] array){
+    public String arrayToString(char [] array){
         if(array == null){
             throw new NullPointerException("Массив не может быть пустым");
         }

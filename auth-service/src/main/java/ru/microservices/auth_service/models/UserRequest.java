@@ -5,8 +5,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-import java.util.Arrays;
-
 public record UserRequest(
         @Pattern(
                 regexp = "^[А-Яа-яA-Za-z]+$",
@@ -27,15 +25,6 @@ public record UserRequest(
         @Size(max = 75, message = "Размер email не должен превышать 75 символов")
         String email,
 
-        Character[] password) {
+        char[] password) {
 
-    @Override
-    public String toString() {
-        return "UserRequest{" +
-                "firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
-                ", password=" + Arrays.toString(password) +
-                '}';
-    }
 }
