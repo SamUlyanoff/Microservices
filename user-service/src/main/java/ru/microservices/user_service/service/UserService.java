@@ -31,6 +31,7 @@ public class UserService {
         var email = userCreatedEvent.email();
 
         if (checkEmailExistence(email)) {
+            //TODO: здесь мы хоть и отменили регистрацию пользователя, но в ответ на запрос auth-service возвращает 201Created. Как правильно это обработать?
             logger.error("Пользователь с email`ом {} уже существует!", email);
             return;
         }
