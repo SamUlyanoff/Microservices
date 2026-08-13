@@ -9,35 +9,41 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ru.microservices.auth_service.entity.AuthOutBoxEvent;
 import ru.microservices.auth_service.repository.AuthOutBoxRepository;
-import ru.microservices.auth_service.repository.UserPasswordRepository;
+import ru.microservices.common_events.outbox.SentStatus;
 
 import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 @Component
 @AllArgsConstructor
 public class AuthOutBoxScheduler {
 
     private final AuthOutBoxRepository authOutBoxRepository;
-    private final UserPasswordRepository userPasswordRepository;
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Scheduled(fixedDelay = 3000)
+    /**
+     * Отправка событий в брокер.<br></br>
+     * Каждые 3 сек вытаскивает из БД не отправленные событие, статус которых не равен "FAILED".<p>
+     * Отправка успешная - обновление статуса на 'SENT' и счетчика;<p>
+     * Отправка неудачная:<p>
+     * Счетчик попыток < 5 - просто обновление счетчика и попытка повторной отправки в будущем<p>
+     * Счетчик попыток = 5 - обновление статуса на 'FAILED'
+     */
+    @Scheduled(fixedDelay = 5000)
     @Transactional(timeout = 5)
     public void sendingEvents() {
 
         List<AuthOutBoxEvent> events = authOutBoxRepository.getEventsWithoutSent();
 
         if (events.isEmpty()) {
+            logger.info("Нет задач, ждущих отправки.");
             return;
         }
 
         logger.info("Количество не отправленных событий: {}", events.size());
 
         for (AuthOutBoxEvent event : events) {
+            var tryCount = event.getTryCount();
             try {
                 kafkaTemplate.send(
                         event.getEventType(),
@@ -45,44 +51,33 @@ public class AuthOutBoxScheduler {
                         event.getPayload()
                 ).get();
 
-                authOutBoxRepository.updateSentStatusById(event.getId(), true);
-
+                authOutBoxRepository.updateSentStatus(
+                        event.getId(),
+                        true,
+                        SentStatus.SENT,
+                        tryCount + 1
+                );
             } catch (Exception e) {
                 logger.error("Ошибка при отправке события: eventId = {}, eventType = {}, error = {}", event.getId(), event.getEventType(), e.getMessage(), e);
+                tryCount++;
+                if (tryCount < 5) {
+                    authOutBoxRepository.updateSentStatus(
+                            event.getId(),
+                            false,
+                            SentStatus.PENDING,
+                            tryCount
+                    );
+                }else {
+                    authOutBoxRepository.updateSentStatus(
+                            event.getId(),
+                            false,
+                            SentStatus.FAILED,
+                            tryCount
+                    );
+                }
             }
         }
     }
 
-    @Scheduled(fixedDelay = 60000)
-    @Transactional
-    public void findingAndDeletingStuckEvents(){
-
-        List<AuthOutBoxEvent> stuckEvents = authOutBoxRepository.getStuckEvents();
-
-        if(stuckEvents.isEmpty()) return;
-
-        logger.info("Количество зависших событий: {}", stuckEvents.size());
-
-        for(AuthOutBoxEvent stuckEvent: stuckEvents){
-
-            try {
-                kafkaTemplate.send(
-                        stuckEvent.getEventType(),
-                        stuckEvent.getAggregateId(),
-                        stuckEvent.getPayload()
-                ).get(3, TimeUnit.SECONDS);
-
-                authOutBoxRepository.updateSentStatusById(stuckEvent.getId(), true);
-
-            }catch (Exception e) {
-                UUID aggregateId = UUID.fromString(stuckEvent.getAggregateId());
-                authOutBoxRepository.deleteByAggregateId(aggregateId);
-                //TODO: наверное шедулер не должен знать про userPasswordRepository
-                userPasswordRepository.deleteByUserId(aggregateId);
-                logger.error("Вышло время для отправки сообщения: eventId = {}, eventType = {}. Производится удаление события.", stuckEvent.getId(), stuckEvent.getEventType());
-            }
-        }
-
-    }
 
 }

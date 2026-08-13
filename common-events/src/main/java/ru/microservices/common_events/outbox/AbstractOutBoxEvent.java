@@ -35,6 +35,14 @@ public abstract class AbstractOutBoxEvent {
     @Column(name = "payload", nullable = false)
     private String payload;
 
+    /**Статус отправки события*/
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private SentStatus status;
+
+    @Column(name = "count_of_try", nullable = false)
+    private Integer tryCount;
+
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 

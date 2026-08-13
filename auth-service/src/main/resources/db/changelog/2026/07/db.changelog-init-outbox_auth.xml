@@ -26,6 +26,12 @@
             <column name="payload" type="TEXT">
                 <constraints nullable="false"/>
             </column>
+            <column name="status" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="count_of_try" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
             <column name="sent" type="boolean">
                 <constraints nullable="false"/>
             </column>

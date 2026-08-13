@@ -5,8 +5,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import ru.microservices.auth_service.entity.AuthOutBoxEvent;
+import ru.microservices.common_events.outbox.SentStatus;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,36 +16,24 @@ public interface AuthOutBoxRepository extends JpaRepository<AuthOutBoxEvent, UUI
             SELECT
                 *
             FROM outbox_auth aoe
-            WHERE aoe.sent = false
+            WHERE aoe.sent = false AND aoe.status!='FAILED'
             ORDER BY aoe.created_at ASC
             LIMIT 10
             FOR UPDATE SKIP LOCKED
             """, nativeQuery = true)
     List<AuthOutBoxEvent> getEventsWithoutSent();
 
-    @Query(value = """
-            SELECT
-                *
-            FROM outbox_auth aoe
-            WHERE aoe.sent = false AND EXTRACT(EPOCH FROM (NOW() - aoe.created_at)) >300
-            ORDER BY aoe.created_at ASC
-            FOR UPDATE SKIP LOCKED
-            """, nativeQuery = true)
-    List<AuthOutBoxEvent> getStuckEvents();
-
     @Modifying
     @Query("""
             UPDATE
                 AuthOutBoxEvent aoe
-            SET aoe.sent =:sent
+            SET aoe.sent =:sent, aoe.status=:status, aoe.tryCount =:tryCount
             WHERE aoe.id =:id
             """)
-    void updateSentStatusById(@Param("id") UUID id, @Param("sent") boolean sent);
+    void updateSentStatus(
+            @Param("id") UUID id,
+            @Param("sent") boolean sent,
+            @Param("status")SentStatus status,
+            @Param("tryCount") Integer tryCount);
 
-    @Query("""
-            DELETE
-            FROM AuthOutBoxEvent aoe
-            WHERE aoe.aggregateId =:aggregateId
-            """)
-    void deleteByAggregateId(@Param("aggregateId") UUID aggregateId);
 }

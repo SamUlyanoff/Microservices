@@ -20,12 +20,24 @@ public class UserService {
     private final ObjectMapper objectMapper;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @KafkaListener(topics = "user.created")
+    @KafkaListener(topics = "user.created", groupId = "userService")
     @Transactional
-    public void createUser(String payload){
+    public void createUser(String payload) {
+        logger.info("Обработка топика user.created");
+
         UserCreatedEvent userCreatedEvent = objectMapper.readValue(payload, UserCreatedEvent.class);
+        logger.info("Событие, принятое методом: {}", userCreatedEvent);
+
+        var email = userCreatedEvent.email();
+
+        if (checkEmailExistence(email)) {
+            logger.error("Пользователь с email`ом {} уже существует!", email);
+            return;
+        }
+
         userRepository.save(userMapper.mapUser(userCreatedEvent));
-        logger.info("Пользователь с email {} создан", userCreatedEvent.email());
+
+        logger.info("Пользователь с email {} создан", email);
     }
 
     /**
@@ -33,7 +45,7 @@ public class UserService {
      * Если в БД нет такого email, то возвращает false
      */
     @Transactional
-    public boolean checkEmailExistence(String email){
-        return userRepository.getUserByEmail(email)!=null;
+    public boolean checkEmailExistence(String email) {
+        return userRepository.getUserByEmail(email) != null;
     }
 }

@@ -12,6 +12,7 @@ import ru.microservices.auth_service.validation.PasswordValidation;
 import ru.microservices.common_events.UserCreatedEvent;
 import ru.microservices.auth_service.entity.UserPassword;
 import ru.microservices.auth_service.repository.UserPasswordRepository;
+import ru.microservices.common_events.outbox.SentStatus;
 import tools.jackson.databind.ObjectMapper;
 
 import java.time.Instant;
@@ -63,6 +64,8 @@ public class AuthService {
                 .payload(objectMapper.writeValueAsString(userCreatedEvent))
                 .createdAt(Instant.now())
                 .sent(false)
+                .tryCount(0)
+                .status(SentStatus.PENDING)
                 .build()
         );
 
