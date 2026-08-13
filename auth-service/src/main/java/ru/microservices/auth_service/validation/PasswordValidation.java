@@ -1,13 +1,14 @@
 package ru.microservices.auth_service.validation;
 
 import org.springframework.stereotype.Component;
+import ru.microservices.auth_service.exceptions.PasswordValidationException;
 
 @Component
 public class PasswordValidation {
 
     public void validate(char[] password){
-        if(password == null) throw new RuntimeException("Пароль не может быть пустым");
-        if(password.length < 8) throw new RuntimeException("Длина пароля должна быть не мене 8 символов");
+        if(password == null) throw new PasswordValidationException("Пароль не может быть пустым");
+        if(password.length < 8) throw new PasswordValidationException("Длина пароля должна быть не мене 8 символов");
 
         boolean hasUpper = false;
         boolean hasLower = false;
@@ -20,7 +21,7 @@ public class PasswordValidation {
         }
 
         if(!hasUpper||!hasLower||!hasDigit){
-            throw new RuntimeException("Пароль должен содержать минимум одну заглавную букву, одну строчную обувку и одну цифру");
+            throw new PasswordValidationException("Пароль должен содержать минимум одну заглавную букву, одну строчную обувку и одну цифру");
         }
     }
 }
